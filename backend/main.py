@@ -16,6 +16,7 @@ import structlog
 
 from core.config import settings
 from core.event_bus import get_event_bus
+from core.database import db_service
 from api import router as api_router
 
 # Configure structured logging
@@ -44,6 +45,10 @@ async def lifespan(app: FastAPI):
         pairs=settings.trading_pairs
     )
 
+    # Initialize database (Sprint 4.3)
+    await db_service.initialize()
+    logger.info("database_initialized", path=db_service.database_url)
+
     # Initialize event bus
     event_bus = await get_event_bus()
     logger.info("event_bus_initialized")
@@ -57,6 +62,8 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("application_shutting_down")
+    await db_service.shutdown()
+    logger.info("database_shutdown_complete")
     await event_bus.disconnect()
     logger.info("application_shutdown_complete")
 
@@ -87,11 +94,12 @@ async def root():
     """Root endpoint - system status."""
     return {
         "name": "FOQCAPAY Trading Bot",
-        "version": "0.1.0-alpha",
+        "version": "0.5.0-beta",
         "status": "operational",
         "mode": settings.trading_mode,
         "trading_pairs": settings.trading_pairs,
-        "sprint": "1.2 - Infrastructure Setup"
+        "sprint": "4.3 - Database Persistence",
+        "database": "connected" if db_service._initialized else "initializing"
     }
 
 
@@ -101,6 +109,7 @@ async def health_check():
     return {
         "status": "healthy",
         "mode": settings.trading_mode,
+        "database": "connected" if db_service._initialized else "initializing",
         "redis": "connected",  # TODO: actual check
         "agents": "initializing"  # TODO: agent health
     }
