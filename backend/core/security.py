@@ -21,7 +21,7 @@ import base64
 from typing import Optional, Tuple
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import structlog
 
 logger = structlog.get_logger(__name__)
@@ -76,7 +76,7 @@ class APIKeyManager:
             # In production, this should be stored securely
             salt = b"foqcapay-salt-2024"
 
-        kdf = PBKDF2(
+        kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
             length=32,
             salt=salt,

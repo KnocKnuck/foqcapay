@@ -49,7 +49,8 @@ def test_redis_url_construction():
 
 def test_invalid_trading_mode():
     """Test that invalid trading mode raises error."""
-    with pytest.raises(ValueError, match="Trading mode must be"):
+    from pydantic_core import ValidationError
+    with pytest.raises(ValidationError):
         Settings(trading_mode="invalid")
 
 

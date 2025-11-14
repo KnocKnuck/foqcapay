@@ -250,7 +250,8 @@ def test_live_order_validation_insufficient_balance():
     """Test orders exceeding balance are rejected."""
     is_valid, msg = TradingModeValidator.validate_live_order(
         order_size=1500.0,
-        account_balance=1000.0
+        account_balance=1000.0,
+        max_order_size=5000.0  # Increase max to test balance check specifically
     )
 
     assert is_valid is False
