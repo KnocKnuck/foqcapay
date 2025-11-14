@@ -1,0 +1,119 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+ENV/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+.next/
+out/
+.vercel
+.turbo
+
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+*.pem
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+db.sqlite3
+
+# Redis
+dump.rdb
+
+# Docker
+docker-compose.override.yml
+
+# Trading Data
+data/trades/
+data/backtest/
+data/cache/
+
+# Secrets (double-check these never get committed!)
+config/secrets.json
+config/api_keys.json
+**/secrets/**
+*.key
+*.secret
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Documentation builds
+docs/_build/
+site/
+
+# Coverage
+.coverage.*
+coverage/
+
+# Spec Kit (keep structure but ignore if cloned)
+.spec-kit/.git/
