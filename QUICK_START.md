@@ -1,31 +1,305 @@
 # 🚀 Quick Start Guide - FOQCAPAY Trading Bot
 
-**Get up and running in 10 minutes!**
+**Get up and running in under 5 minutes with Docker!**
 
-This guide will help you set up and run the FOQCAPAY crypto trading bot locally on your machine.
+This guide provides TWO ways to run the FOQCAPAY crypto trading bot:
+1. **🐳 Docker** (Recommended - Easiest & Fastest!)
+2. **🔧 Manual Setup** (For development)
+
+**Current Sprint**: 5.2 - Advanced Features (Backtesting + Export)
+**Status**: 77% Complete, Production-Ready Database Persistence
 
 ---
 
-## ✅ Prerequisites
+## 🎯 Choose Your Path
 
-Before you begin, ensure you have:
+### **Option A: Docker Setup** (Recommended for Quick Start)
+✅ No Python/Node installation needed
+✅ Redis included automatically
+✅ Production-ready configuration
+✅ One command to start
+⏱️ **Time**: 3-5 minutes
 
-- **Python 3.11+** - [Download](https://www.python.org/downloads/)
-- **Node.js 18+** - [Download](https://nodejs.org/)
-- **Redis** - Event bus for agent communication
-- **Git** - Version control
-- **CoinEx Account** (optional for demo mode) - [Sign up](https://www.coinex.com/)
+[Jump to Docker Setup](#-option-a-docker-setup-recommended)
 
-**Check your versions:**
+### **Option B: Manual Setup** (For Development)
+🔧 Full control over environment
+🔨 Best for contributors/developers
+📚 Learn the internals
+⏱️ **Time**: 10-15 minutes
+
+[Jump to Manual Setup](#-option-b-manual-setup-development)
+
+---
+
+# 🐳 Option A: Docker Setup (Recommended)
+
+## Prerequisites
+
+- **Docker** & **Docker Compose** - [Get Docker](https://docs.docker.com/get-docker/)
+- **Git** - [Download](https://git-scm.com/downloads)
+
+**Check your installation:**
 ```bash
-python --version    # Should be 3.11 or higher
-node --version      # Should be v18 or higher
-git --version       # Any recent version
+docker --version          # Should be 20.10+
+docker-compose --version  # Should be 2.0+
 ```
 
 ---
 
-## 📦 Step 1: Clone the Repository
+## Step 1: Clone & Configure
+
+```bash
+# Clone repository
+git clone https://github.com/KnocKnuck/foqcapay.git
+cd foqcapay
+
+# Create environment file from template
+cp .env.example .env
+
+# (Optional) Edit .env for your preferences
+# Default values work great for demo mode!
+nano .env  # or use any text editor
+```
+
+### Quick .env Configuration
+
+For **DEMO MODE** (no API keys needed):
+```bash
+TRADING_MODE=demo
+TRADING_PAIRS=BTC/USDC,ETH/USDC,LINK/USDC
+```
+
+For **LIVE TRADING** (⚠️ real money!):
+```bash
+TRADING_MODE=live
+COINEX_API_KEY=your_api_key_here
+COINEX_API_SECRET=your_api_secret_here
+ENCRYPTION_PASSWORD=your_strong_password_min_32_chars
+```
+
+---
+
+## Step 2: Start Everything
+
+```bash
+# Start all services with one command!
+docker-compose up -d
+
+# Check status
+docker-compose ps
+```
+
+You should see:
+```
+NAME                 STATUS              PORTS
+foqcapay-backend     Up 10 seconds      0.0.0.0:8000->8000/tcp
+foqcapay-redis       Up 11 seconds      0.0.0.0:6379->6379/tcp
+```
+
+---
+
+## Step 3: Verify Installation
+
+### Check Backend API
+Open **http://localhost:8000** in your browser:
+
+```json
+{
+  "name": "FOQCAPAY Trading Bot",
+  "version": "0.5.0-beta",
+  "status": "operational",
+  "mode": "demo",
+  "trading_pairs": ["BTC/USDC", "ETH/USDC", "LINK/USDC"],
+  "sprint": "5.2 - Advanced Features",
+  "database": "connected"
+}
+```
+
+### Check Health
+**http://localhost:8000/health**
+
+```json
+{
+  "status": "healthy",
+  "mode": "demo",
+  "database": "connected",
+  "redis": "connected",
+  "agents": "operational"
+}
+```
+
+### View Logs
+```bash
+# View backend logs
+docker-compose logs -f backend
+
+# View all logs
+docker-compose logs -f
+```
+
+---
+
+## ✅ You're Running!
+
+### What's Available Now:
+
+**API Endpoints** - http://localhost:8000/docs (Swagger UI)
+- ✅ `/api/trades/*` - Trade history & management
+- ✅ `/api/positions/*` - Position tracking
+- ✅ `/api/performance/*` - Performance metrics
+- ✅ `/api/backtest/*` - Strategy backtesting
+- ✅ `/api/export/*` - Data export (CSV/JSON)
+- ✅ `/api/monitoring/*` - System monitoring
+- ✅ `/ws/*` - WebSocket real-time updates
+
+**Features**:
+- ✅ Multi-pair trading (BTC, ETH, LINK/USDC)
+- ✅ 4 trading strategies (Scalping, Intraday, Swing, MA Crossover)
+- ✅ Risk management (stop-loss, take-profit, trailing stops)
+- ✅ **Database persistence** (all data survives restarts!)
+- ✅ **Backtesting engine** (test strategies on historical data!)
+- ✅ **Export to CSV/JSON** (analyze your trades!)
+- ✅ Real-time monitoring
+- ✅ Production-ready logging
+
+---
+
+## Docker Commands Cheat Sheet
+
+```bash
+# Start services
+docker-compose up -d
+
+# Stop services
+docker-compose down
+
+# Restart services
+docker-compose restart
+
+# View logs
+docker-compose logs -f backend
+
+# Check status
+docker-compose ps
+
+# Update to latest code
+git pull
+docker-compose build
+docker-compose up -d
+
+# Stop and remove everything (including data!)
+docker-compose down -v  # ⚠️ This deletes database!
+
+# Access backend shell
+docker-compose exec backend bash
+
+# Run tests
+docker-compose exec backend pytest
+```
+
+---
+
+## 🎯 Try It Out!
+
+### 1. Run a Backtest
+
+```bash
+curl -X POST "http://localhost:8000/api/backtest/run" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "strategy_name": "MA_Crossover",
+    "pair": "BTC/USDC",
+    "timeframe": "1h",
+    "start_date": "2024-01-01T00:00:00",
+    "end_date": "2024-12-01T00:00:00",
+    "initial_capital": 10000,
+    "position_size_pct": 10,
+    "stop_loss_pct": 2,
+    "take_profit_pct": 5
+  }'
+```
+
+### 2. Export Trades to CSV
+
+Visit: http://localhost:8000/api/export/trades/csv
+
+Downloads: `trades_20251114.csv`
+
+### 3. View API Documentation
+
+Visit: http://localhost:8000/docs
+
+Interactive Swagger UI with all endpoints!
+
+---
+
+## 🐛 Troubleshooting Docker
+
+### Issue: "port is already allocated"
+
+```bash
+# Find what's using port 8000
+lsof -i :8000  # macOS/Linux
+netstat -ano | findstr :8000  # Windows
+
+# Either kill that process or change port in docker-compose.yml
+```
+
+### Issue: "Cannot connect to Docker daemon"
+
+```bash
+# Start Docker Desktop (Mac/Windows)
+# Or start Docker service (Linux):
+sudo systemctl start docker
+```
+
+### Issue: Containers keep restarting
+
+```bash
+# Check logs for errors
+docker-compose logs backend
+
+# Common fixes:
+# 1. Check .env file exists and is valid
+# 2. Ensure Redis is healthy: docker-compose logs redis
+# 3. Rebuild: docker-compose build --no-cache
+```
+
+### Issue: Database not persisting
+
+```bash
+# Check data volume
+docker volume ls | grep foqcapay
+
+# Data is in: ./data/foqcapay.db (mapped from container)
+ls -la data/
+
+# Ensure volume is mounted (check docker-compose.yml)
+```
+
+---
+
+# 🔧 Option B: Manual Setup (Development)
+
+For developers who want full control.
+
+## Prerequisites
+
+- **Python 3.11+** - [Download](https://www.python.org/downloads/)
+- **Node.js 18+** - [Download](https://nodejs.org/) (for frontend, coming soon)
+- **Redis** - Event bus
+- **Git** - Version control
+
+```bash
+python --version  # 3.11+
+node --version    # v18+
+git --version
+```
+
+---
+
+## Step 1: Clone Repository
 
 ```bash
 git clone https://github.com/KnocKnuck/foqcapay.git
@@ -34,18 +308,13 @@ cd foqcapay
 
 ---
 
-## 🔧 Step 2: Install Redis (Event Bus)
-
-The bot uses Redis for inter-agent communication.
+## Step 2: Install Redis
 
 ### macOS (Homebrew)
 ```bash
 brew install redis
 brew services start redis
-
-# Verify it's running
-redis-cli ping
-# Should return: PONG
+redis-cli ping  # Should return: PONG
 ```
 
 ### Ubuntu/Debian
@@ -53,26 +322,21 @@ redis-cli ping
 sudo apt update
 sudo apt install redis-server
 sudo systemctl start redis
-sudo systemctl enable redis
-
-# Verify
-redis-cli ping
-# Should return: PONG
+redis-cli ping  # Should return: PONG
 ```
 
 ### Windows
-1. Download Redis from [tporadowski/redis](https://github.com/tporadowski/redis/releases)
-2. Extract and run `redis-server.exe`
-3. In another terminal: `redis-cli.exe ping` should return PONG
+Download from [tporadowski/redis](https://github.com/tporadowski/redis/releases)
+Run `redis-server.exe`
 
-### Docker (Cross-platform)
+### Docker (Quick Alternative)
 ```bash
 docker run -d -p 6379:6379 --name redis redis:alpine
 ```
 
 ---
 
-## 🐍 Step 3: Setup Backend (Python/FastAPI)
+## Step 3: Setup Backend
 
 ```bash
 cd backend
@@ -80,347 +344,338 @@ cd backend
 # Create virtual environment
 python -m venv venv
 
-# Activate virtual environment
-# On macOS/Linux:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
+# Activate it
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate      # Windows
 
-# Install dependencies (takes ~2 minutes)
+# Install dependencies (~2 minutes)
 pip install -r requirements.txt
 
 # Create environment file
 cp .env.example .env
-```
 
-### Configure Environment (Optional for Demo)
-
-Edit `backend/.env`:
-
-```bash
-# For DEMO mode (default) - No API keys needed!
-TRADING_MODE=demo
-DEMO_STARTING_BALANCE=10000.0
-
-# Trading Pairs (multi-pair support!)
-TRADING_PAIRS=BTC/USDC,ETH/USDC,LINK/USDC
-
-# For LIVE trading (real money!) - Add your CoinEx API keys
-# Get keys from: https://www.coinex.com/apimanagement
-# COINEX_API_KEY=your_key_here
-# COINEX_API_SECRET=your_secret_here
-# TRADING_MODE=live  # ONLY when ready!
-```
-
-**⚠️ Start with demo mode!** No API keys needed for practice.
-
----
-
-## 🎨 Step 4: Setup Frontend (Next.js/React)
-
-Open a **new terminal** (keep backend terminal open):
-
-```bash
-cd frontend
-
-# Install dependencies (takes ~3 minutes)
-npm install
-
-# Create environment file
-cp .env.example .env.local
-
-# (Optional) Customize settings
-# Edit .env.local if needed - defaults work fine!
+# Edit .env as needed (defaults work for demo!)
 ```
 
 ---
 
-## 🚀 Step 5: Start the Application
-
-### Terminal 1: Start Backend
+## Step 4: Start Backend
 
 ```bash
 cd backend
-source venv/bin/activate  # If not already activated
+source venv/bin/activate  # If not already active
+
+# Run the server
 python main.py
 ```
 
-You should see:
+Expected output:
 ```
-INFO:     Started server process
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
+INFO:     application_starting version="0.5.0-beta" mode="demo"
+INFO:     database_initialized path="sqlite+aiosqlite:///data/foqcapay.db"
+INFO:     event_bus_initialized
 INFO:     Uvicorn running on http://0.0.0.0:8000
 ```
 
 ✅ Backend is running on **http://localhost:8000**
 
-### Terminal 2: Start Frontend
+---
+
+## Step 5: Verify
+
+Visit: http://localhost:8000
+
+You should see the API status JSON.
+
+Visit: http://localhost:8000/docs
+
+Interactive API documentation!
+
+---
+
+## 📊 What's Working (Sprint 5.2 - 77% Complete)
+
+### ✅ Completed Features:
+
+**Infrastructure** (Sprints 1-2):
+- ✅ FastAPI backend
+- ✅ Redis event bus
+- ✅ Multi-pair support (BTC, ETH, LINK)
+- ✅ 5 technical indicators (MA, RSI, MACD, BB, Volume)
+
+**Trading** (Sprints 3-4):
+- ✅ 4 trading strategies
+- ✅ Risk management (stop-loss, take-profit, drawdown protection)
+- ✅ Live trading mode (CoinEx integration)
+- ✅ Demo mode (paper trading)
+- ✅ Production safeguards ($5K order limit, $20K daily limit)
+
+**Monitoring** (Sprint 4.2):
+- ✅ Performance monitoring
+- ✅ WebSocket real-time updates
+- ✅ Admin dashboard
+- ✅ Health checks
+
+**Data Persistence** (Sprint 4.3 - CRITICAL!):
+- ✅ SQLite database
+- ✅ Trade history persistence
+- ✅ Position tracking
+- ✅ Account state snapshots
+- ✅ Complete audit trail
+- ✅ Data survives restarts!
+
+**Dashboard** (Sprint 5.1):
+- ✅ Trading dashboard (positions, trades, P&L)
+- ✅ Performance charts (equity curve, daily P&L)
+- ✅ Real-time WebSocket updates
+
+**Advanced Features** (Sprint 5.2 - 64% Complete):
+- ✅ **Backtesting engine** (test strategies on historical data!)
+- ✅ **Export to CSV/JSON** (download trade history!)
+- ✅ Performance metrics (Sharpe, Sortino, drawdown)
+- ✅ Strategy comparison
+- 🔨 Notifications (Telegram, email) - In Progress
+
+---
+
+## 🎯 Try the New Features!
+
+### 1. Backtest a Strategy
+
+```python
+# Using Python requests
+import requests
+
+response = requests.post("http://localhost:8000/api/backtest/run", json={
+    "strategy_name": "MA_Crossover",
+    "pair": "BTC/USDC",
+    "timeframe": "1h",
+    "start_date": "2024-01-01T00:00:00",
+    "end_date": "2024-12-01T00:00:00",
+    "initial_capital": 10000,
+    "position_size_pct": 10,
+    "stop_loss_pct": 2,
+    "take_profit_pct": 5
+})
+
+print(response.json())
+# Returns: backtest_id, total_return_pct, win_rate, sharpe_ratio, etc.
+```
+
+### 2. Export Your Trades
+
+Visit in browser:
+- CSV: http://localhost:8000/api/export/trades/csv
+- JSON: http://localhost:8000/api/export/trades/json
+
+Or with curl:
+```bash
+curl "http://localhost:8000/api/export/trades/csv?pair=BTC/USDC" > my_trades.csv
+```
+
+### 3. View Backtest Results
 
 ```bash
-cd frontend
-npm run dev
-```
+# List all backtests
+curl http://localhost:8000/api/backtest/list
 
-You should see:
-```
-▲ Next.js 14.0.4
-- Local:        http://localhost:3000
-- Ready in 2.5s
-```
+# Get specific backtest details
+curl http://localhost:8000/api/backtest/results/{backtest_id}
 
-✅ Frontend is running on **http://localhost:3000**
-
----
-
-## 🎉 Step 6: Verify Installation
-
-### Open Your Browser
-
-Go to **http://localhost:3000**
-
-You should see:
-- ✅ **System Status**: "operational"
-- ✅ **Version**: 0.1.0-alpha
-- ✅ **Mode**: DEMO (or LIVE if configured)
-- ✅ **Trading Pairs**: BTC/USDC, ETH/USDC, LINK/USDC badges
-- ✅ **Sprint**: 1.2 - Infrastructure Setup
-
-### Test Backend API
-
-Open **http://localhost:8000** in another tab.
-
-You should see:
-```json
-{
-  "name": "FOQCAPAY Trading Bot",
-  "version": "0.1.0-alpha",
-  "status": "operational",
-  "mode": "demo",
-  "trading_pairs": ["BTC/USDC", "ETH/USDC", "LINK/USDC"],
-  "sprint": "1.2 - Infrastructure Setup"
-}
-```
-
-### Test Health Endpoint
-
-http://localhost:8000/health
-
-```json
-{
-  "status": "healthy",
-  "mode": "demo",
-  "redis": "connected",
-  "agents": "initializing"
-}
-```
-
----
-
-## 🎯 What's Working Now (Sprint 1.2)
-
-✅ **Backend API** serving requests
-✅ **Event Bus** (Redis) operational
-✅ **Frontend** displaying system status
-✅ **Multi-pair** configuration (BTC, ETH, LINK)
-✅ **Demo mode** ready
-
-### Coming Soon (Sprint 1.2 completion - Week 4):
-- 🔨 Live market data from CoinEx
-- 🔨 Price charts with candle sticks
-- 🔨 Trading pair selector dropdown
-- 🔨 Real-time price updates
-
----
-
-## 🐛 Troubleshooting
-
-### Issue: "redis-cli: command not found"
-
-**Solution**: Redis not installed. Go back to Step 2.
-
----
-
-### Issue: "ModuleNotFoundError: No module named 'fastapi'"
-
-**Solution**: Virtual environment not activated or dependencies not installed.
-
-```bash
-cd backend
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
----
-
-### Issue: Backend shows "Connection refused" for Redis
-
-**Solution**: Redis not running.
-
-```bash
-# Check if Redis is running
-redis-cli ping
-
-# If not, start it
-# macOS: brew services start redis
-# Ubuntu: sudo systemctl start redis
-# Windows: Run redis-server.exe
-# Docker: docker start redis
-```
-
----
-
-### Issue: Frontend shows "Failed to connect to backend"
-
-**Solution**: Backend not running or wrong URL.
-
-1. Ensure backend is running: `http://localhost:8000`
-2. Check `frontend/.env.local`:
-   ```
-   NEXT_PUBLIC_API_URL=http://localhost:8000
-   ```
-3. Restart frontend: `npm run dev`
-
----
-
-### Issue: "Port 8000 already in use"
-
-**Solution**: Another process using port 8000.
-
-```bash
-# Find process
-# macOS/Linux:
-lsof -i :8000
-kill -9 <PID>
-
-# Windows:
-netstat -ano | findstr :8000
-taskkill /PID <PID> /F
-
-# Or change port in backend/.env:
-PORT=8001
-```
-
----
-
-### Issue: npm install fails
-
-**Solution**: Node version too old or network issues.
-
-```bash
-# Check Node version
-node --version  # Must be v18+
-
-# Clear npm cache and retry
-npm cache clean --force
-rm -rf node_modules package-lock.json
-npm install
+# Get equity curve data
+curl http://localhost:8000/api/backtest/results/{backtest_id}/equity_curve
 ```
 
 ---
 
 ## 📚 Next Steps
 
-### 1. **Explore the Dashboard**
-- View system status
-- See configured trading pairs
-- Check backend connection
+### 1. Explore the API
+- Visit http://localhost:8000/docs
+- Try out different endpoints
+- Run backtests with different parameters
 
-### 2. **Read the Documentation**
+### 2. Read the Documentation
+- [Sprint Progress Report](./spec/SPRINT_PROGRESS_REPORT.md) - See what's done
+- [Live Trading Guide](./LIVE_TRADING_GUIDE.md) - When you're ready for real trading
 - [Project Specification](./spec/PROJECT_SPEC.md) - Full vision
-- [Sprint Planning](./spec/SPRINT_PLANNING.md) - Current development
-- [Agent Documentation](./.claude/agents/) - How agents work
 
-### 3. **Try Demo Trading** (Coming in Sprint 2.2)
-- Strategies will execute automatically
-- Virtual $10,000 balance
-- No real money risk!
+### 3. Try Live Trading (When Ready!)
+- Get CoinEx API keys
+- Update `.env` with your keys
+- Set `TRADING_MODE=live`
+- **Start with small amounts!**
 
-### 4. **Monitor Progress**
-- Check [Sprint Planning](./spec/SPRINT_PLANNING.md) for latest updates
-- Follow commits on GitHub
+### 4. Contribute
+- Report bugs on GitHub
+- Suggest features
+- Submit pull requests
 - Star the repo! ⭐
 
 ---
 
-## 🎓 Learn More
-
-### Understanding the System
-- **25 Agents**: Each agent is a specialist (Market Data, Indicators, Strategy, etc.)
-- **Event Bus**: Agents communicate via Redis Pub/Sub
-- **Multi-Pair**: Trade BTC, ETH, LINK (and more) simultaneously
-- **Strategies**: Pre-configured Scalping, Intraday, Swing strategies
-
-### Key Files
-- `backend/main.py` - Application entry point
-- `backend/core/event_bus.py` - Agent communication
-- `frontend/src/app/page.tsx` - Dashboard UI
-- `spec/SPRINT_PLANNING.md` - Development roadmap
-
----
-
-## 🔐 Security Notes
+## 🔐 Security Best Practices
 
 ### For Demo Mode
 - ✅ No API keys needed
 - ✅ No real money at risk
 - ✅ Safe to experiment
 
-### For Live Trading (When Ready)
-- ⚠️ **Never commit API keys to git!**
-- ⚠️ Keys are in `.env` (which is git-ignored)
+### For Live Trading
+- ⚠️ **NEVER commit API keys to git!**
+- ⚠️ Use strong `ENCRYPTION_PASSWORD`
+- ⚠️ Keep `.env` file secure (it's git-ignored)
 - ⚠️ Start with small amounts
-- ⚠️ Understand risks before going live
+- ⚠️ Enable 2FA on your CoinEx account
+- ⚠️ Use IP whitelisting on API keys
+- ⚠️ Monitor your trades regularly
+
+### Data Security
+- ✅ API keys encrypted in database (PBKDF2HMAC)
+- ✅ Database at `data/foqcapay.db` (backup regularly!)
+- ✅ Logs at `logs/` (check for sensitive data)
+- ✅ All sensitive files in `.gitignore`
+
+---
+
+## 🐛 Troubleshooting
+
+### Redis Connection Issues
+
+```bash
+# Check if Redis is running
+redis-cli ping  # Should return: PONG
+
+# If not, start it
+brew services start redis  # macOS
+sudo systemctl start redis  # Linux
+# Or restart Docker container
+```
+
+### Import Errors
+
+```bash
+# Make sure you're in the backend directory
+cd backend
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Reinstall dependencies
+pip install -r requirements.txt
+
+# Check Python version
+python --version  # Must be 3.11+
+```
+
+### Database Issues
+
+```bash
+# Check if database file exists
+ls -la data/foqcapay.db
+
+# If missing, it will be created on first run
+# Delete and recreate if corrupted:
+rm data/foqcapay.db
+python main.py  # Will create fresh database
+```
+
+### Port Already in Use
+
+```bash
+# Find what's using port 8000
+lsof -i :8000  # macOS/Linux
+netstat -ano | findstr :8000  # Windows
+
+# Kill the process or change port in .env:
+PORT=8001
+```
+
+---
+
+## 📊 Project Status
+
+**Version**: 0.5.0-beta
+**Sprint**: 5.2 - Advanced Features
+**Progress**: 77% Complete (10/13 sprints)
+**Lines of Code**: ~13,100+
+**API Endpoints**: 46+
+**Database Models**: 5
+**Test Coverage**: 31 tests passing
+
+**Production Ready**:
+- ✅ Database persistence
+- ✅ Live trading
+- ✅ Risk management
+- ✅ Monitoring
+- ✅ Backtesting
+- ✅ Export functionality
+- 🔨 Notifications (in progress)
 
 ---
 
 ## 🤝 Getting Help
 
-### Something not working?
+### Resources
+- **API Docs**: http://localhost:8000/docs
+- **GitHub Issues**: [Report bugs](https://github.com/KnocKnuck/foqcapay/issues)
+- **Documentation**: See `spec/` folder
+- **Logs**: Check terminal output and `logs/` directory
 
-1. **Check this guide** - Most issues covered above
-2. **Check logs**:
-   - Backend: Terminal 1 output
-   - Frontend: Terminal 2 output and browser console (F12)
-3. **Check Redis**: `redis-cli ping` should return PONG
-4. **GitHub Issues**: [Report a bug](https://github.com/KnocKnuck/foqcapay/issues)
-5. **Discord** (coming soon): Community support
+### Common Questions
+
+**Q: Can I trade with real money?**
+A: Yes! Set `TRADING_MODE=live` and add your CoinEx API keys. Start small!
+
+**Q: How do I add more trading pairs?**
+A: Edit `.env` → `TRADING_PAIRS=BTC/USDC,ETH/USDC,YOUR/PAIR`
+
+**Q: Where is my data stored?**
+A: Database at `data/foqcapay.db`, logs at `logs/`, both git-ignored.
+
+**Q: How do I backup my data?**
+A: Copy `data/foqcapay.db` file. For Docker: `docker cp foqcapay-backend:/app/data ./backup`
+
+**Q: Can I run multiple strategies at once?**
+A: Yes! The system supports multi-strategy execution on multiple pairs simultaneously.
 
 ---
 
-## 🎉 Success!
+## 🎉 Success Checklist
 
-If you see the dashboard and system status shows "operational", you're ready! 🚀
-
-**What's Next**:
-- Wait for Sprint 1.2 completion (live charts coming!)
-- Read the [User Stories](./spec/USER_STORIES.md) to understand features
-- Follow along with development
-- Consider contributing!
-
----
-
-## ⏱️ Quick Start Checklist
-
-- [ ] Python 3.11+ installed
-- [ ] Node.js 18+ installed
-- [ ] Redis installed and running (`redis-cli ping` = PONG)
+- [ ] Docker installed (Option A) OR Python 3.11+ (Option B)
 - [ ] Repository cloned
-- [ ] Backend dependencies installed (`pip install -r requirements.txt`)
-- [ ] Frontend dependencies installed (`npm install`)
-- [ ] Backend `.env` file created from `.env.example`
-- [ ] Frontend `.env.local` file created from `.env.example`
-- [ ] Backend running on http://localhost:8000
-- [ ] Frontend running on http://localhost:3000
-- [ ] Dashboard shows "operational" status
-- [ ] Trading pairs (BTC, ETH, LINK) displayed
+- [ ] `.env` file created and configured
+- [ ] Services started (Docker: `docker-compose up -d` / Manual: `python main.py`)
+- [ ] Backend accessible at http://localhost:8000
+- [ ] API docs showing at http://localhost:8000/docs
+- [ ] Health check shows "healthy"
+- [ ] Database connected
+- [ ] Redis connected
 
-**Completion Time**: 10-15 minutes ✅
+**Completion Time**:
+- Docker: 3-5 minutes ✅
+- Manual: 10-15 minutes ✅
 
 ---
+
+## 🚀 You're Ready!
 
 **Welcome to FOQCAPAY!** 🤖💰
 
-**Status**: Sprint 1.2 - Infrastructure Ready
-**Next Update**: Sprint 1.2 completion (live charts!)
+You now have a production-ready crypto trading bot with:
+- Multi-pair trading
+- Multiple strategies
+- Backtesting capabilities
+- Data export
+- Complete persistence
+- Real-time monitoring
+
+**Start exploring and happy trading!** 📈
+
+---
+
 **Last Updated**: 2025-11-14
+**Status**: Sprint 5.2 (Advanced Features) - 77% Complete
+**Next Sprint**: 5.2 Completion → Notifications + Testing
+**v1.0 Target**: Month 6

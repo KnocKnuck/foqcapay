@@ -19,7 +19,7 @@ import json
 import io
 import structlog
 
-from backend.core.database import DatabaseService, get_db_service
+from core.database import DatabaseService, get_db_service
 
 logger = structlog.get_logger(__name__)
 
@@ -295,7 +295,7 @@ async def export_backtest_csv(backtest_id: str):
     Returns backtest trades in CSV format.
     """
     # TODO: Implement backtest export from stored results
-    from backend.api.backtest import _backtest_results
+    from api.backtest import _backtest_results
     from fastapi import HTTPException
 
     if backtest_id not in _backtest_results:

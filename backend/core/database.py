@@ -32,7 +32,7 @@ from sqlalchemy import select, func, and_, or_, desc, asc
 from sqlalchemy.orm import selectinload
 import structlog
 
-from backend.models.database import (
+from models.database import (
     Base,
     Trade,
     Position,
@@ -40,7 +40,7 @@ from backend.models.database import (
     AccountState,
     TradingEvent,
 )
-from backend.core.config import settings
+from core.config import settings
 
 logger = structlog.get_logger(__name__)
 

@@ -16,13 +16,13 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel
 import structlog
 
-from backend.services.backtesting import (
+from services.backtesting import (
     BacktestEngine,
     BacktestConfig,
     BacktestResults,
     BacktestStatus,
 )
-from backend.core.database import DatabaseService, get_db_service
+from core.database import DatabaseService, get_db_service
 
 logger = structlog.get_logger(__name__)
 

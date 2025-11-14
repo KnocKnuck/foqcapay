@@ -4,7 +4,7 @@ Database Models Package
 Exports all SQLAlchemy models for import throughout the application.
 """
 
-from backend.models.database import (
+from models.database import (
     Base,
     Trade,
     Position,

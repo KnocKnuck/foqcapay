@@ -17,7 +17,7 @@ from datetime import datetime
 from pydantic import BaseModel
 import structlog
 
-from backend.core.database import DatabaseService, get_db_service
+from core.database import DatabaseService, get_db_service
 
 logger = structlog.get_logger(__name__)
 

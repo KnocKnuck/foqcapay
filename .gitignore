@@ -71,17 +71,21 @@ logs/
 *.sqlite
 *.sqlite3
 db.sqlite3
+data/*.db
+data/foqcapay.db
 
 # Redis
 dump.rdb
 
 # Docker
 docker-compose.override.yml
+.dockerignore
 
 # Trading Data
 data/trades/
 data/backtest/
 data/cache/
+data/
 
 # Secrets (double-check these never get committed!)
 config/secrets.json
