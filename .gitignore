@@ -116,4 +116,4 @@ site/
 coverage/
 
 # Spec Kit (keep structure but ignore if cloned)
-.spec-kit/.git/
+.spec-kit/
