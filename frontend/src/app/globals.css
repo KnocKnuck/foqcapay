@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design Tokens - Light Theme (Default) */
+:root {
+  /* Colors */
+  --color-bg: #FFFFFF;
+  --color-bg-panel: #F7F7F7;
+  --color-text: #1F1F1F;
+  --color-primary: #3B82F6;
+  --color-success: #16A34A;
+  --color-danger: #DC2626;
+  --color-border: #E5E7EB;
+
+  /* Chart Colors */
+  --color-candle-up: #16A34A;
+  --color-candle-down: #DC2626;
+
+  /* Spacing */
+  --spacing-unit: 4px;
+
+  /* Border Radius */
+  --radius: 6px;
+
+  /* Font */
+  --font-inter: "Inter", sans-serif;
+}
+
+/* Design Tokens - Dark Theme */
+.dark {
+  --color-bg: #121212;
+  --color-bg-panel: #1E1E1E;
+  --color-text: #E4E4E4;
+  --color-primary: #3B82F6;
+  --color-success: #22C55E;
+  --color-danger: #F87171;
+  --color-border: #2D2D2D;
+
+  /* Chart colors stay consistent */
+  --color-candle-up: #22C55E;
+  --color-candle-down: #F87171;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-panel;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-border rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/50;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-in-out;
+}
