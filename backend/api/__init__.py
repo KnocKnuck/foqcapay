@@ -26,8 +26,19 @@ try:
     router.include_router(trades.router)
     router.include_router(positions.router)
     router.include_router(performance.router)
-except ImportError:
-    pass
+except ImportError as e:
+    import structlog
+    logger = structlog.get_logger(__name__)
+    logger.warning("failed_to_import_sprint_5_1_apis", error=str(e))
+
+# Trading Control API (separate from others - no dependencies)
+try:
+    from . import trading_control
+    router.include_router(trading_control.router)
+except ImportError as e:
+    import structlog
+    logger = structlog.get_logger(__name__)
+    logger.warning("failed_to_import_trading_control_api", error=str(e))
 
 # Sprint 5.2 - Backtesting & Export
 try:

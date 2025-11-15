@@ -132,9 +132,22 @@ export function TradingDashboard() {
     try {
       const metricsResponse = await fetch("http://localhost:8000/api/performance/metrics");
       const metricsData = await metricsResponse.json();
-      setMetrics(metricsData);
+      // Merge with defaults to ensure all fields exist
+      setMetrics({
+        totalTrades: metricsData.totalTrades || 0,
+        winningTrades: metricsData.winningTrades || 0,
+        losingTrades: metricsData.losingTrades || 0,
+        winRate: metricsData.winRate || 0,
+        totalPnL: metricsData.totalPnL || 0,
+        avgWin: metricsData.avgWin || 0,
+        avgLoss: metricsData.avgLoss || 0,
+        largestWin: metricsData.largestWin || 0,
+        largestLoss: metricsData.largestLoss || 0,
+        profitFactor: metricsData.profitFactor || 0,
+      });
     } catch (error) {
       console.error("Failed to fetch metrics:", error);
+      // Keep default metrics on error
     }
   };
 
@@ -260,9 +273,9 @@ export function TradingDashboard() {
         />
         <MetricCard
           label="Profit Factor"
-          value={metrics.profitFactor.toFixed(2)}
+          value={(metrics.profitFactor || 0).toFixed(2)}
           icon={BarChart3}
-          color={metrics.profitFactor >= 1.5 ? "success" : "warning"}
+          color={(metrics.profitFactor || 0) >= 1.5 ? "success" : "warning"}
         />
       </div>
 

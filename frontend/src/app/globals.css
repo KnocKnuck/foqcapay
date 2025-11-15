@@ -68,7 +68,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary/50;
+  @apply bg-border opacity-70;
 }
 
 /* Animations */
