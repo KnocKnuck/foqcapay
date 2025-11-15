@@ -10,21 +10,24 @@ Provides endpoints for performance analytics and metrics.
 Agent: #20 API Development Agent
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from typing import Dict, Any
-from api.trades import _trade_history
+from core.database import DatabaseService, get_db_service
 
 router = APIRouter(prefix="/api/performance", tags=["performance"])
 
 
 @router.get("/metrics")
-async def get_performance_metrics():
+async def get_performance_metrics(db: DatabaseService = Depends(get_db_service)):
     """
     Get overall performance metrics.
 
     Returns comprehensive trading performance statistics.
     """
-    if not _trade_history:
+    # Get trades from database
+    trades = await db.get_trades(limit=1000)
+
+    if not trades:
         return {
             "totalTrades": 0,
             "winningTrades": 0,

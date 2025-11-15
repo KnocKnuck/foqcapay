@@ -10,12 +10,21 @@ import { Play, Square } from "lucide-react";
 type Strategy = "scalping" | "intraday" | "swing" | "ma_crossover";
 type Mode = "demo" | "live";
 
+interface PairTradingStatus {
+  strategy: Strategy;
+  is_active: boolean;
+  started_at: string;
+  stopped_at: string | null;
+}
+
 interface TradingStatus {
   is_trading: boolean;
-  active_strategy: Strategy | null;
+  active_strategy: Strategy | null;  // For backward compatibility
   mode: Mode;
   started_at: string | null;
   stopped_at: string | null;
+  pairs: Record<string, PairTradingStatus>;  // Multi-pair support
+  active_pairs?: string[];
 }
 
 interface MarketData {
@@ -50,6 +59,8 @@ export default function Home() {
     mode: "demo",
     started_at: null,
     stopped_at: null,
+    pairs: {},
+    active_pairs: [],
   });
   const [selectedStrategy, setSelectedStrategy] = useState<Strategy>("intraday");
 
@@ -162,6 +173,7 @@ export default function Home() {
         body: JSON.stringify({
           strategy: selectedStrategy,
           mode: tradingStatus.mode,
+          pairs: pairs,  // Trade all available pairs simultaneously
         }),
       });
       const data = await res.json();
@@ -452,14 +464,14 @@ export default function Home() {
                   className="flex items-center gap-2 px-4 py-1.5 bg-success hover:bg-success/90 text-white rounded font-medium text-sm transition-colors"
                 >
                   <Play size={16} />
-                  Start Trading
+                  Start Trading (All Pairs)
                 </button>
               ) : (
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-2 text-sm">
                     <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                     <span className="font-medium">
-                      Trading Active - {strategyLabels[tradingStatus.active_strategy || "intraday"]}
+                      Trading {tradingStatus.active_pairs?.length || 0} Pair(s) - {strategyLabels[tradingStatus.active_strategy || "intraday"]}
                     </span>
                   </div>
                   <button
@@ -467,12 +479,36 @@ export default function Home() {
                     className="flex items-center gap-2 px-4 py-1.5 bg-danger hover:bg-danger/90 text-white rounded font-medium text-sm transition-colors"
                   >
                     <Square size={16} />
-                    Stop Trading
+                    Stop All Trading
                   </button>
                 </div>
               )}
             </div>
           </div>
+
+          {/* Active Pairs Status - Show when trading */}
+          {tradingStatus.is_trading && tradingStatus.active_pairs && tradingStatus.active_pairs.length > 0 && (
+            <div className="flex items-center gap-3 pt-3 border-t border-border">
+              <span className="text-xs font-medium text-foreground/70">Active Pairs:</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                {tradingStatus.active_pairs.map((pair) => {
+                  const pairStatus = tradingStatus.pairs[pair];
+                  return (
+                    <div
+                      key={pair}
+                      className="flex items-center gap-2 px-3 py-1 bg-success/10 border border-success/30 rounded text-xs font-medium"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                      <span>{pair}</span>
+                      {pairStatus && (
+                        <span className="text-foreground/60">({strategyLabels[pairStatus.strategy]})</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

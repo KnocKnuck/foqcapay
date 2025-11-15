@@ -12,6 +12,10 @@ router = APIRouter()
 # Import route modules
 from . import market_data, health
 
+# Register market data routes
+router.include_router(market_data.router)
+router.include_router(health.router)
+
 # Sprint 4.2 - Monitoring
 try:
     from . import monitoring, websocket

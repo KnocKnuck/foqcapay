@@ -200,6 +200,81 @@ docker-compose exec backend pytest
 
 ---
 
+## 🎮 Using the Trading Dashboard
+
+### Overview
+The Trading Dashboard provides full control over your trading bot with an intuitive interface for:
+- Starting/stopping trading
+- Switching between trading strategies
+- Toggling Demo vs Live mode
+- Monitoring real-time prices
+- Viewing active positions and trade history
+
+### Trading Controls
+
+#### Start Trading
+1. Select a trading strategy from the dropdown:
+   - **Scalping**: Fast trades, 1-5 minute timeframes, quick profits
+   - **Intraday**: Trade within the day, 15m-1h timeframes
+   - **Swing**: Multi-day positions, 4h-1d timeframes
+   - **MA Crossover**: Moving average crossover strategy
+
+2. Choose your mode:
+   - **Demo Mode**: Paper trading with virtual funds (safe for testing)
+   - **Live Mode**: Real trading with actual funds (requires API keys)
+
+3. Click **"Start Trading"** button
+   - Bot begins executing the selected strategy
+   - Real-time updates appear in the dashboard
+   - Price ticker shows current market prices
+
+#### Stop Trading
+1. Click **"Stop Trading"** button
+2. Bot stops opening new positions
+3. Option to close existing positions or leave them open
+4. Trading status updates to "Stopped"
+
+#### Change Strategy (Hot-Swap)
+- Select a new strategy from the dropdown
+- Click **"Change Strategy"** button
+- Strategy switches immediately (even while trading is active)
+- Existing positions remain open
+- New signals use the new strategy
+
+#### Switch Trading Mode
+- Toggle between Demo and Live mode
+- **Important**: Recommended to stop trading before switching modes
+- Demo mode requires no API keys
+- Live mode requires CoinEx API credentials
+
+### Pair Selector & Price Ticker
+- **Pair Selector**: Choose which trading pair to view (BTC/USDC, ETH/USDC, LINK/USDC)
+- **Price Ticker**: Real-time price updates for selected pair
+- Updates automatically via WebSocket connection
+- Shows current market price with 2 decimal precision
+
+### Dashboard Features
+
+#### Active Positions
+- View all open positions in real-time
+- Shows: pair, side (long/short), entry price, current P&L
+- Auto-updates via WebSocket
+
+#### Recent Trades
+- Complete trade history
+- Filters by pair, date range, strategy
+- Shows: timestamp, pair, side, price, quantity, P&L
+- Export to CSV/JSON for analysis
+
+#### Performance Metrics
+- Total P&L (profit/loss)
+- Win rate percentage
+- Sharpe ratio (risk-adjusted returns)
+- Maximum drawdown
+- Daily/weekly/monthly performance charts
+
+---
+
 ## 🎯 Try It Out!
 
 ### 1. Run a Backtest

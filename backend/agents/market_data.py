@@ -29,7 +29,7 @@ Status: In Development
 """
 
 import asyncio
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 import ccxt.async_support as ccxt
 import structlog
