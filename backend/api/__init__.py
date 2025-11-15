@@ -52,4 +52,11 @@ try:
 except ImportError:
     pass
 
+# Enhancement Phase - Signals API
+try:
+    from . import signals
+    router.include_router(signals.router)
+except ImportError:
+    pass
+
 __all__ = ["router"]
